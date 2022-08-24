@@ -1,0 +1,15 @@
+.barContainer {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    /* align-self: end; */
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+.singleBar {
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+    align-self: end;
+}

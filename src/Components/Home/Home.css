@@ -1,0 +1,22 @@
+.containerRow{
+  height: 90vh;
+}
+
+.column-1 {
+  background-color: aquamarine;
+}
+.column-2 {
+  background-color: bisque;
+}
+
+.allSort{
+  height: 70%;
+}
+
+.singleSortBtn{
+  border: 1px solid blue;
+  border-radius: 5px;
+}
+.singleSortBtn:hover i {
+  transform: scale(1.1);
+}
