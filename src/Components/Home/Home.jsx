@@ -10,6 +10,7 @@ const Home = () => {
     const [selectedSort, setSelectedSort] = useState('');
     const [currentStep, setCurrentStep] = useState(0);
     const [totalStep, setTotalStep] = useState(0);
+    const [running, setRunning] = useState(false);
 
     const rangeChange = (e) => {
         setRange(e.target.value);
@@ -18,8 +19,8 @@ const Home = () => {
         return 100 / data.length;
     };
 
-    const bubbleClick = () => {
-        setSelectedSort('Bable Sort');
+    const sortClick = (sort) => {
+        setSelectedSort(sort);
     };
     const startClick = async () => {
         const [sortedBubbleData, steps] = bubbleSort(data);
@@ -28,11 +29,15 @@ const Home = () => {
     };
     const drawSteps = async (steps, speed) => {
         setTotalStep(steps.length);
+        setRunning(true);
         for (let i = 0; i < steps.length; i++) {
             // console.log(steps[i]);
             setTimeout(() => {
                 setData(steps[i].array);
                 setCurrentStep(i + 1);
+                if (i === steps.length - 1) {
+                    setRunning(false);
+                }
             }, speed * i);
         }
     };
@@ -65,7 +70,7 @@ const Home = () => {
                         <div className="d-flex justify-content-between my-1">
                             <button
                                 className="singleSortBtn"
-                                onClick={bubbleClick}
+                                onClick={()=>sortClick('Bubble Sort')}
                             >
                                 Bubble Sort
                             </button>
@@ -73,7 +78,7 @@ const Home = () => {
                         <div className="d-flex justify-content-between">
                             <button
                                 className="singleSortBtn"
-                                onClick={bubbleClick}
+                                onClick={()=>sortClick('Selection Sort')}
                             >
                                 Selection Sort
                             </button>
@@ -101,10 +106,13 @@ const Home = () => {
                                 min="5"
                                 max="100"
                                 onChange={rangeChange}
+                                disabled={running}
                             />
                             <span>{range}</span>
                         </div>
-                        <Button onClick={() => startClick()}>Start</Button>
+                        <Button disabled={running} onClick={() => startClick()}>
+                            Start
+                        </Button>
                     </div>
                 </Col>
                 <Col className="col-10 column-2">
