@@ -1,22 +1,45 @@
-.containerRow{
-  height: 90vh;
+.containerRow {
+    height: 90vh;
 }
 
 .column-1 {
-  background-color: aquamarine;
+    background-color: rgba(127, 255, 212, 0.568);
 }
 .column-2 {
-  background-color: bisque;
+    background-color: bisque;
 }
 
-.allSort{
-  height: 70%;
+.allSort {
+    height: 50%;
 }
 
-.singleSortBtn{
-  border: 1px solid blue;
-  border-radius: 5px;
+.singleSortBtn {
+    border: 1px solid blue;
+    border-radius: 5px;
 }
 .singleSortBtn:hover i {
-  transform: scale(1.1);
+    transform: scale(1.1);
+}
+.barContainer {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    /* align-self: end; */
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+.singleBar {
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+    align-self: end;
+}
+
+.css-3v5nb6-MuiFormLabel-root-MuiInputLabel-root.Mui-disabled {
+    color: #198754 !important;
+}
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+    opacity: 1;
+    -webkit-text-fill-color: #084298 !important;
 }

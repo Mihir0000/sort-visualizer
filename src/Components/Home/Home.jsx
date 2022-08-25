@@ -1,29 +1,49 @@
+import { TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
-import SortContainer from '../SortContainer/SortContainer';
 import './Home.css';
+import { bubbleSort } from '../Algorithms/Sort';
 
 const Home = () => {
     const [data, setData] = useState([]);
-    const [range, setRange] = useState(50);
+    const [range, setRange] = useState(20);
+    const [selectedSort, setSelectedSort] = useState('');
+    const [currentStep, setCurrentStep] = useState(0);
+    const [totalStep, setTotalStep] = useState(0);
 
     const rangeChange = (e) => {
         setRange(e.target.value);
     };
-
-    const bableClick = () => {
-        for (let i = 0; i < data.length - 1; i++) {
-            for (let j = 0; j < data.length - 1 - i; j++) {
-                if (data[j] > data[j + 1]) {
-                    let temp = data[j];
-                    data[j] = data[j + 1];
-                    data[j + 1] = temp;
-                }
-                setData(data);
-            }
-        }
-        console.log(data);
+    const selectWidth = () => {
+        return 100 / data.length;
     };
+
+    const bubbleClick = () => {
+        setSelectedSort('Bable Sort');
+    };
+    const startClick = async () => {
+        const [sortedBubbleData, steps] = bubbleSort(data);
+        console.log(sortedBubbleData, steps);
+        await drawSteps(steps, 100);
+    };
+    const drawSteps = async (steps, speed) => {
+        setTotalStep(steps.length);
+        for (let i = 0; i < steps.length; i++) {
+            // console.log(steps[i]);
+            setTimeout(() => {
+                setData(steps[i].array);
+                setCurrentStep(i + 1);
+            }, speed * i);
+        }
+    };
+
+    // function createRandomArray() {
+    //     const arr = [];
+    //     for (let i = 0; i < range; i++) {
+    //         arr.push(Math.round(Math.ceil(Math.random() * 321)));
+    //     }
+    //     setData(arr);
+    // }
     useEffect(() => {
         const arr = [];
         for (let i = 0; i < range; i++) {
@@ -43,23 +63,37 @@ const Home = () => {
                         <h5 className="text-center">Sort</h5>
                         <hr />
                         <div className="d-flex justify-content-between my-1">
-                            <h6>1.Bubble Sort</h6>
                             <button
                                 className="singleSortBtn"
-                                onClick={bableClick}
+                                onClick={bubbleClick}
                             >
-                                <i className="fa-solid fa-arrow-right-long" />
+                                Bubble Sort
                             </button>
                         </div>
                         <div className="d-flex justify-content-between">
-                            <h6>2.Selection Sort</h6>
-                            <button className="singleSortBtn">
-                                <i className="fa-solid fa-arrow-right-long" />
+                            <button
+                                className="singleSortBtn"
+                                onClick={bubbleClick}
+                            >
+                                Selection Sort
                             </button>
                         </div>
                     </div>
-                    <div className="">
-                        <div>
+                    <div>
+                        <TextField
+                            className="text-bold"
+                            id="outlined-password-input"
+                            label="Sort"
+                            disabled
+                            type="text"
+                            value={selectedSort}
+                            autoComplete="current-password"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                            color="success"
+                        />
+                        <div className="d-flex flex-row justify-content-between">
                             <input
                                 type="range"
                                 name=""
@@ -70,11 +104,40 @@ const Home = () => {
                             />
                             <span>{range}</span>
                         </div>
-                        <Button>Start</Button>
+                        <Button onClick={() => startClick()}>Start</Button>
                     </div>
                 </Col>
                 <Col className="col-10 column-2">
-                    <SortContainer data={data} />
+                    <Container>
+                        <div className="barContainer">
+                            <div className="d-flex flex-row">
+                                {data &&
+                                    data.map((item, index) => {
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="singleBar"
+                                                style={{
+                                                    height: `${item}px`,
+                                                    width: `${selectWidth()}%`,
+                                                    backgroundColor: '#ff2f2f',
+                                                    borderTopLeftRadius: '5px',
+                                                    borderTopRightRadius: '5px',
+                                                }}
+                                            ></div>
+                                        );
+                                    })}
+                            </div>
+                            <hr />
+                        </div>
+                        <div>
+                            <div>
+                                <h6>
+                                    Current Step : {currentStep} / {totalStep}
+                                </h6>
+                            </div>
+                        </div>
+                    </Container>
                 </Col>
             </Row>
         </Container>
