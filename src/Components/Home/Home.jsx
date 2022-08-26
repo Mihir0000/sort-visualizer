@@ -1,8 +1,12 @@
-import { TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import './Home.css';
-import { bubbleSort } from '../Algorithms/Sort';
+import {
+    bubbleSort,
+    insertionSort,
+    quickSort,
+    selectionSort,
+} from '../Algorithms/Sort';
 
 const Home = () => {
     const [data, setData] = useState([]);
@@ -11,9 +15,20 @@ const Home = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [totalStep, setTotalStep] = useState(0);
     const [running, setRunning] = useState(false);
+    const [ms, setMs] = useState(10);
+
+    const sortName = [
+        { id: 1, sort: 'Bubble Sort' },
+        { id: 2, sort: 'Selection Sort' },
+        { id: 3, sort: 'Insertion Sort' },
+        { id: 4, sort: 'Quick Sort' },
+    ];
 
     const rangeChange = (e) => {
         setRange(e.target.value);
+    };
+    const msChange = (e) => {
+        setMs(e.target.value);
     };
     const selectWidth = () => {
         return 100 / data.length;
@@ -22,10 +37,33 @@ const Home = () => {
     const sortClick = (sort) => {
         setSelectedSort(sort);
     };
-    const startClick = async () => {
-        const [sortedBubbleData, steps] = bubbleSort(data);
-        console.log(sortedBubbleData, steps);
-        await drawSteps(steps, 100);
+    const startClick = async (selectedSort) => {
+        console.log(selectedSort);
+        let steps;
+        switch (selectedSort) {
+            case 'Bubble Sort':
+                steps = bubbleSort(data)[1];
+                console.log(steps);
+                break;
+            case 'Selection Sort':
+                steps = selectionSort(data)[1];
+                console.log(steps);
+                break;
+            case 'Insertion Sort':
+                steps = insertionSort(data)[1];
+                console.log(steps);
+                break;
+            case 'Quick Sort':
+                steps = quickSort(data)[1];
+                console.log(steps);
+                break;
+            default:
+                break;
+            // setError('Please Select Any Sort');
+        }
+        if (selectedSort) {
+            await drawSteps(steps, ms);
+        }
     };
     const drawSteps = async (steps, speed) => {
         setTotalStep(steps.length);
@@ -42,63 +80,77 @@ const Home = () => {
         }
     };
 
-    // function createRandomArray() {
-    //     const arr = [];
-    //     for (let i = 0; i < range; i++) {
-    //         arr.push(Math.round(Math.ceil(Math.random() * 321)));
-    //     }
-    //     setData(arr);
-    // }
+    function createRandomArray() {
+        const arr = [];
+        for (let i = 0; i < range; i++) {
+            arr.push(Math.round(Math.ceil(Math.random() * 321)));
+        }
+        setData(arr);
+        setCurrentStep(0);
+        setTotalStep(0);
+    }
     useEffect(() => {
         const arr = [];
         for (let i = 0; i < range; i++) {
             arr.push(Math.round(Math.ceil(Math.random() * 321)));
         }
         setData(arr);
+        setCurrentStep(0);
+        setTotalStep(0);
     }, [range]);
 
     return (
         <Container fluid>
             <Row>
-                <h3 className="py-2 text-primary">Sorting Visualizer</h3>
+                <div className="d-flex">
+                    <h3 className="py-2 text-primary w-30">Sorting Visualizer</h3>
+                    <div className='gifContainer'>
+                        <img id='gifimg' src="/image/giff.gif" className="giff" alt="" />
+                    </div>
+                </div>
             </Row>
             <Row className="containerRow">
                 <Col className="col-2  column-1">
                     <div className="allSort">
                         <h5 className="text-center">Sort</h5>
                         <hr />
-                        <div className="d-flex justify-content-between my-1">
-                            <button
-                                className="singleSortBtn"
-                                onClick={()=>sortClick('Bubble Sort')}
-                            >
-                                Bubble Sort
-                            </button>
-                        </div>
-                        <div className="d-flex justify-content-between">
-                            <button
-                                className="singleSortBtn"
-                                onClick={()=>sortClick('Selection Sort')}
-                            >
-                                Selection Sort
-                            </button>
-                        </div>
+                        {sortName.map((item) => {
+                            return (
+                                <div key={item.id} className="my-1">
+                                    <button
+                                        disabled={running}
+                                        className={
+                                            'singleSortBtn ' +
+                                            (selectedSort === item.sort
+                                                ? 'activeSort'
+                                                : '')
+                                        }
+                                        onClick={() => sortClick(item.sort)}
+                                    >
+                                        {item.sort}
+                                    </button>
+                                </div>
+                            );
+                        })}
                     </div>
                     <div>
-                        <TextField
-                            className="text-bold"
-                            id="outlined-password-input"
-                            label="Sort"
-                            disabled
-                            type="text"
-                            value={selectedSort}
-                            autoComplete="current-password"
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                            color="success"
-                        />
-                        <div className="d-flex flex-row justify-content-between">
+                        <div className="d-flex flex-row ">
+                            <input
+                                type="range"
+                                name=""
+                                value={ms}
+                                min="1"
+                                max="1000"
+                                onChange={msChange}
+                                disabled={running}
+                            />
+                            <span>{ms} ms</span>
+                        </div>
+
+                        <Button disabled={running} onClick={createRandomArray}>
+                            Random Array
+                        </Button>
+                        <div className="d-flex flex-row ">
                             <input
                                 type="range"
                                 name=""
@@ -110,7 +162,10 @@ const Home = () => {
                             />
                             <span>{range}</span>
                         </div>
-                        <Button disabled={running} onClick={() => startClick()}>
+                        <Button
+                            disabled={running}
+                            onClick={() => startClick(selectedSort)}
+                        >
                             Start
                         </Button>
                     </div>
@@ -124,7 +179,7 @@ const Home = () => {
                                         return (
                                             <div
                                                 key={index}
-                                                className="singleBar"
+                                                className="singleBar toolhover"
                                                 style={{
                                                     height: `${item}px`,
                                                     width: `${selectWidth()}%`,
@@ -132,7 +187,11 @@ const Home = () => {
                                                     borderTopLeftRadius: '5px',
                                                     borderTopRightRadius: '5px',
                                                 }}
-                                            ></div>
+                                            >
+                                                <span className="toolhoverText">
+                                                    {item}
+                                                </span>
+                                            </div>
                                         );
                                     })}
                             </div>
